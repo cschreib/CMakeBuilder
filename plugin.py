@@ -398,6 +398,7 @@ class CmakeBuildCommand(ExecCommand):
         env: 'Dict[str, str]',
         build_target: 'Optional[str]' = None,
         generator: 'Optional[str]' = None,
+        kill=False
     ) -> None:
         gen = make_generator(working_dir, generator)
         cmd = [get_cmake_binary(), "--build", ".", "--config", config]
@@ -408,7 +409,8 @@ class CmakeBuildCommand(ExecCommand):
             working_dir=working_dir,
             env=env,
             syntax=gen.syntax(),
-            file_regex=gen.regex())
+            file_regex=gen.regex(),
+            kill=kill)
 
 
 cached_command_line_args = ""
@@ -641,7 +643,7 @@ class CmakeConfigureCommand(ExecCommand):
     def description(self) -> str:
         return 'Configure'
 
-    def run(self) -> None:
+    def run(self, kill=False) -> None:
         if self.info is None:
             assert self.is_enabled()
         assert self.info is not None
@@ -675,7 +677,8 @@ class CmakeConfigureCommand(ExecCommand):
             working_dir=self.info.working_dir,
             file_regex=r'CMake\s(?:Error|Warning)(?:\s\(dev\))?\sat\s(.+):(\d+)()\s?\(?(\w*)\)?:',
             syntax=syntax("Configure"),
-            env=self.info.env)
+            env=self.info.env,
+            kill=kill)
 
     def on_finished(self, proc):
         log("finished running cmake")
@@ -733,6 +736,7 @@ class CmakeConfigureCommand(ExecCommand):
                     "name": name,
                     "config": name,
                     "target": "cmake_build",
+                    "cancel": {"kill": True},
                     "working_dir": self.info.unexpanded_build_folder,
                     "env": self.info.env}
                 if self.info.generator:

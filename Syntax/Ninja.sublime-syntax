@@ -26,6 +26,7 @@ contexts:
         1: markup.italic.ninja
     - match: ((?:[^\\/]*\\|/)*)(.*)(:)(\d+)(:)(\d+)
       captures:
+        1: string.unquoted.filepath.ninja
         2: string.unquoted.filepath.ninja
         3: punctuation.separator.compiler.ninja
         4: constant.numeric.integer.ninja

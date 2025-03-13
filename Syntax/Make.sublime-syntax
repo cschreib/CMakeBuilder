@@ -20,6 +20,7 @@ contexts:
       scope: markup.quote
     - match: ((?:[^\\/]*\\|/)*)(.*)(:)(\d+)(:)(\d+)
       captures:
+        1: string.unquoted.filepath
         2: string.unquoted.filepath
         3: punctuation.separator.compiler
         4: constant.numeric.integer

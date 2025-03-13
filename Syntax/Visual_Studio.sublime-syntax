@@ -5,24 +5,67 @@ scope: output.build.visual-studio
 
 contexts:
   main:
-    - match: ^\s{2}([a-zA-Z0-9\-_]+\.[a-zA-Z]+)$
+    - match: '^\s{2}([a-zA-Z0-9\-_\.]+\.[a-zA-Z]+)$'
       captures:
-        1: string.unquoted.filepath
-    - match: ^(PostBuildEvent\:|CopyFilesToOutputDirectory\:|Lib\:|PrepareForBuild\:|InitializeBuildStatus\:|CustomBuild\:|FinalizeBuildStatus\:|Done Building Project\:|Link\:|)
-      scope: keyword.control
-    - match: "ClCompile:"
-      scope: keyword.operator
-    - match: ^  (.+)\((\d)\)
-      
-    - match: "^  (.+)\\((\\d+)\\): ((?:error|warning) \\w+\\d\\d\\d\\d: .*) (\\[.*\\])$"
+        1: string.unquoted.filepath.visual-studio
+      # Project and output target
+    - match: '^\s*(.+) -> .*$'
       captures:
-        1: string.unquoted.filepath
-        2: constant.numeric.integer
-        3: markup.changed
-        4: markup.quote
-    - match: "(error) (LNK\\d\\d\\d\\d): (unresolved external symbol)"
+        1: string.unquoted.filepath.visual-studio
+      # Compiler error/warning
+    - match: '^\s*(.+)(\()([\d]+)(,?)([\d]*)(\))\s*(?=:)'
       captures:
-        1: keyword.control
-        2: keyword.control
-        3: invalid.illegal
-...
+        1: string.unquoted.filepath.visual-studio
+        2: punctuation.separator.visual-studio
+        3: constant.numeric.integer
+        4: punctuation.separator.visual-studio
+        5: constant.numeric.integer
+        6: punctuation.separator.visual-studio
+      push: expect-compiler-message
+      # Linker error
+    - match: '^\s*([^(]+)(\()([^)]+)(\))\s*(?=:)'
+      captures:
+        1: string.unquoted.filepath.visual-studio
+        2: punctuation.separator.visual-studio
+        3: constant.numeric.integer
+        4: punctuation.separator.visual-studio
+      push: expect-compiler-message
+      # Linker fatal error
+    - match: '^\s*((\w:)?[^:]+)(?=:)'
+      captures:
+        1: string.unquoted.filepath.visual-studio
+      push: expect-compiler-message
+
+  expect-compiler-message:
+    - meta_scope: meta.block.compiler.diagnostic
+    - match: ':'
+      scope: punctuation.separator.visual-studio
+      set:
+        - meta_content_scope: meta.block.compiler.diagnostic.visual-studio
+        - match: \s*(warning \w+\d+)
+          captures:
+            1: markup.changed.visual-studio
+          set:
+            - meta_content_scope: meta.block.compiler.diagnostic.visual-studio
+            - match: ':'
+              scope: punctuation.separator.visual-studio
+              set:
+                - meta_content_scope: meta.block.compiler.diagnostic.visual-studio
+                - match: (.+)
+                  scope: meta.block.compiler.diagnostic.visual-studio markup.changed.visual-studio
+                  pop: true
+        - match: \s*((fatal error|error) \w+\d+)
+          captures:
+            1: markup.deleted.visual-studio
+          set:
+            - meta_content_scope: meta.block.compiler.diagnostic.visual-studio
+            - match: ':'
+              scope: punctuation.separator.visual-studio
+              set:
+                - match: (.+)
+                  scope: markup.deleted.visual-studio
+                  pop: true
+        - match: .
+          pop: true
+    - match: .
+      pop: true

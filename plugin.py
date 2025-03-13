@@ -271,7 +271,7 @@ class VisualStudioGenerator(Generator):
         return syntax("Visual_Studio")
 
     def regex(self) -> str:
-        return r'^  (.+)\((\d+)\)(): ((?:fatal )?(?:error|warning) \w+\d\d\d\d: .*) \[.*$'
+        return r'^\s*(.+)\((\d+),?(\d*)\):'
 
 
 def make_generator(build_folder: str, generator: Optional[str]) -> Generator:

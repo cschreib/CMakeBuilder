@@ -6,6 +6,10 @@
             "cmd": ["mypy", "--pretty", "plugin.py"],
             "file_regex": "(.*):(\\d+)(): error: (.*)",
             "working_dir": "$folder"
+        },
+        {
+            "name": "Reload Current Package",
+            "target": "package_reloader_reload",
         }
     ],
     "folders":

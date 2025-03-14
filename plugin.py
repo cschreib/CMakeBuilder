@@ -245,7 +245,7 @@ class NinjaGenerator(Generator):
         if sublime.platform() == "windows":
             return r'^(.+)\((\d+)\):() (.+)$'
         else:
-            return r'(.+[^:]):(\d+):(\d+): (?:fatal )?((?:error|warning): .+)$'
+            return r'(.+[^:]):(\d+):(\d+):\s*(.+)$'
 
 
 class UnixMakefilesGenerator(Generator):
@@ -254,7 +254,7 @@ class UnixMakefilesGenerator(Generator):
         return syntax("Make")
 
     def regex(self) -> str:
-        return r'(.+[^:]):(\d+):(\d+): (?:fatal )?((?:error|warning): .+)$'
+        return r'(.+[^:]):(\d+):(\d+):\s*(.+)$'
 
 
 class NMakeMakefilesGenerator(Generator):

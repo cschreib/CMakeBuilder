@@ -265,13 +265,14 @@ class NMakeMakefilesGenerator(Generator):
     def file_regex(self) -> str:
         return r'^(.+)\((\d+)\):() (.+)$'
 
+
 class VisualStudioGenerator(Generator):
 
     def syntax(self) -> str:
         return syntax("Visual_Studio")
 
     def regex(self) -> str:
-        return r'^\s*(.+)\((\d+),?(\d*)\):'
+        return r'^\s*(.+)\((\d+),?(\d*)\)\s*:\s*(.+)$'
 
 
 def make_generator(build_folder: str, generator: Optional[str]) -> Generator:

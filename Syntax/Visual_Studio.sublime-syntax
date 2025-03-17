@@ -13,7 +13,7 @@ contexts:
       captures:
         1: string.unquoted.filepath.visual-studio
       # Compiler error/warning
-    - match: '^\s*(.+)(\()([\d]+)(,?)([\d]*)(\))\s*(?=:)'
+    - match: '^\s*(.+)(\()([\d]+)(,?)([\d]*)(\))\s*(?=:\s*(fatal error|error|warning))'
       captures:
         1: string.unquoted.filepath.visual-studio
         2: punctuation.separator.visual-studio
@@ -23,7 +23,7 @@ contexts:
         6: punctuation.separator.visual-studio
       push: expect-compiler-message
       # Linker error
-    - match: '^\s*([^(]+)(\()([^)]+)(\))\s*(?=:)'
+    - match: '^\s*([^(]+)(\()([^)]+)(\))\s*(?=:\s*(fatal error|error|warning))'
       captures:
         1: string.unquoted.filepath.visual-studio
         2: punctuation.separator.visual-studio
@@ -31,7 +31,7 @@ contexts:
         4: punctuation.separator.visual-studio
       push: expect-compiler-message
       # Linker fatal error
-    - match: '^\s*((\w:)?[^:]+)(?=:)'
+    - match: '^\s*((\w:)?[^:]+)(?=:\s*(fatal error|error|warning))'
       captures:
         1: string.unquoted.filepath.visual-studio
       push: expect-compiler-message

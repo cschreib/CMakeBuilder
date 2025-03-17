@@ -523,8 +523,7 @@ class CmakeInfo:
         self.window = window
         try:
             data = window.project_data()
-            if data is not None:
-                self.__data = data["settings"]["cmake"]
+            self.__data = data["settings"]["cmake"]
         except Exception:
             default = get_setting(window.active_view(), "default_build_folder",
                                   "$folder/build")

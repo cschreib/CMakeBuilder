@@ -18,21 +18,67 @@
 
     //==========================================================================
 
-    // When no build folder setting is present, use this build folder as a
-    // default. You can use variable substitutions.
-    "default_build_folder": "$folder/build",
+    // A string pointing to the directory where you want to build the project. A
+    // good first choice is `$folder/build`.
+    "build_folder": "$folder/build",
 
-    // When no generator setting is present, use this generator as default.
-    // For windows, `null` means the most recent Visual Studio version installed
-    // on the system.
-    "default_windows_generator": null,
-    "default_osx_generator": "Unix Makefiles",
-    "default_linux_generator": "Unix Makefiles",
+    // The directory where the root CMakeLists.txt file resides.
+    "root_folder": "$folder",
+
+    // A dictionary where each value is either a string or a boolean. The key-value
+    // pairs are passed to the CMake invocation when you run `cmake_configure` as
+    // `-D` options. For example, if you have the key-value pair `"MY_VAR": "BLOB"`
+    // in the dictionary, the CMake invocation will contain `-D MY_VAR=BLOB`. Boolean
+    // values are converted to `ON` or `OFF`. For instance, if you have the key-value
+    // pair `"BUILD_SHARED_LIBS": true`in the dictionary, the CMake invocation will
+    // contain `-D BUILD_SHARED_LIBS=ON`.
+    "command_line_overrides": {},
+
+    // The generator to use when configuring the CMake project. If null, a suitable
+    // default for the current platform will be used.
+    // - Available generators for osx: "Ninja" and "Unix Makefiles".
+    //   If no generator is specified on osx, "Unix Makefiles" is the default
+    //   generator. For "Ninja", you must have ninja installed. Install it with brew.
+    //
+    // - Available generators for linux: "Ninja" and "Unix Makefiles".
+    //   If no generator is specified on linux, "Unix Makefiles" is the default
+    //   generator. For "Ninja", you must have ninja installed. Install it with your
+    //   package manager.
+    //
+    // - Available generators for windows: "Ninja" and "Visual Studio".
+    //   If no generator is specified on windows, "Visual Studio" is the default
+    //   generator. You need Microsoft Visual Studio C++ in order to configure your
+    //   project wether you're using Ninja or Visual Studio.
+    "generator": null,
+
+    // For generators that support a platform argument. In the case of this plugin
+    // that would be Visual Studio. In practice, set this to "x64" to build 64-bit
+    // binaries instead of the default 32-bit. This is the `-A` argument passed to
+    // CMake.
+    "generator_platform": null,
+
+    // For generators that support a toolset argument. In the case of this plugin
+    // that would be Visual Studio. In practice, set this to `{ "host": "x64" }` to
+    // use the 64-bit compiler instead of the 32-bit compiler. This is the `-T`
+    // argument passed to CMake. As in the case of `command_line_overrides`, the
+    // dictionary is converted into a string as in `key1=value1;key2=value2`.
+    "generator_toolset": {},
+
+    // When using the Ninja generator on Windows, by default it will use the most
+    // recent Visual Studio SDK on the system. If you need another SDK, define
+    // the `vs_major_version` number to be 15 or 16.
+    "generator_vs_major_version": null,
 
     // The path to the CMake binary. If CMake is in your PATH, then you don't
     // have to change this. Otherwise, specify the full path to the CMake
     // executable.
     "cmake_binary": "cmake",
+
+    // This is a dict of key-value pairs of strings. Place your environment
+    // variables at configure time in here. For example, to select clang as
+    // your compiler if you have gcc set as default, you can use
+    //     "env": { "CC": "clang", "CXX": "clang++" }
+    "env": {},
 
     // If true, adds the option -Wno-dev to the cmake invocation during
     // configure time.
